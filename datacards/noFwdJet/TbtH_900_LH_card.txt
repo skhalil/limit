@@ -1,0 +1,21 @@
+imax 1  number of channels 
+jmax 2  number of backgrounds 
+kmax *  number of nuisance parameters 
+------------------------------------------- 
+shapes * * templates_pT_H_300_pT_top_400_29Sep17.root $CHANNEL_$PROCESS $CHANNEL_$PROCESS_$SYSTEMATIC 
+------------------------------------------- 
+# we have just one channel, in which we observe x data events 
+bin         MTP_regionD 
+observation 681.0    
+# now we list the expected events for sig and all backgrounds in that bin 
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal 
+# then we list the independent sources of uncertainties, and give their effect (syst. error) 
+# on each process and bin 
+bin                         MTP_regionD  MTP_regionD  MTP_regionD   
+process                     TbtH_900_LH  estQCD      TTJets       
+process                     0           1           2            
+rate                        7.3618      270.2029    455.4541    
+--------------------------------------------------------------------------
+lumi         lnN            1.0260      0.9493      1.0534      lumi 
+purewt       lnN            1.0300      0.9417      1.0619      pileup 
+topxsec      lnN            -              0.8841      0.8841      ttbar norm 
