@@ -22,7 +22,7 @@ parser.add_option('--model', metavar='V', type='string', action='store',
 # ==========end: options =============
 model = options.model
 
-def getLimit(model,masses):
+def getLimit(model,masses,xs_th):
   print 'model to be plot', model, ' ', masses 
   grexplim = ROOT.TGraph(len(masses))
   grexp1sig = ROOT.TGraphAsymmErrors(len(masses))
@@ -30,12 +30,13 @@ def getLimit(model,masses):
   
   grexplim .SetName('grexplim' +'_'+model) 
   grexp1sig.SetName('grexp1sig'+'_'+model) 
-  grexp2sig.SetName('grexp2sig'+'_'+model) 
-  
-  for mass in masses:
+  grexp2sig.SetName('grexp2sig'+'_'+model)
+ 
+  mass_xsec = zip(masses, xs_th)
+  for mass, xsec in mass_xsec:
     i = masses.index(mass)
-    xsec = 1. 
-    f = ROOT.TFile.Open("limitFiles/higgsCombine_Expected_"+model+"_M"+str(mass)+".Asymptotic.mH120.root", "r")
+    #xsec = 1.
+    f = ROOT.TFile.Open("limitFiles/noFwdJet/higgsCombine_Expected_"+model+"_M"+str(mass)+".Asymptotic.mH120.root", "r")
     limit = f.Get("limit")
     entries = limit.GetEntriesFast()
     obs = 0
@@ -53,13 +54,12 @@ def getLimit(model,masses):
       elif quant == 0.5: exp = lim
       elif quant > 0.83 and quant < 0.85: exp1sHigh = lim
       elif quant > 0.97 and quant < 0.98: exp2sHigh = lim 
-    print 'mass', mass, ':i', i
     grexplim.SetPoint(i, mass, xsec*exp)
     grexp1sig.SetPoint(i, mass, xsec*exp)
     grexp2sig.SetPoint(i, mass, xsec*exp)
     grexp1sig.SetPointError(i, 0, 0, xsec*abs(exp-exp1sLow), xsec*abs(exp1sHigh-exp))
     grexp2sig.SetPointError(i, 0, 0, xsec*abs(exp-exp2sLow), xsec*abs(exp2sHigh-exp))
-    print "model %s mass %f exp %f" % (model, mass, xsec*exp)
+    print '{0:<2} GeV : {1:<7.2f} fb'.format(mass, xsec*exp*1000)
   return grexplim, grexp1sig, grexp2sig
 
 ###___________________________
@@ -76,7 +76,7 @@ def plotLimits(model, masses, th_xs):
     p_th +=1
 
   # expected limit curves
-  grexplim, grexp1sig, grexp2sig = getLimit(model,masses)
+  grexplim, grexp1sig, grexp2sig = getLimit(model, masses, th_xs)
   print grthlim.GetN(), ' ',grexplim.GetN(), ' ', grexp1sig.GetN(), ' ', grexp2sig.GetN(), ' '
 
   #return
@@ -170,16 +170,16 @@ def plotLimits(model, masses, th_xs):
   legend.AddEntry(grexp2sig , "2 s.d.","f")
   
   if model == 'TbtH':
-    legend.AddEntry(grthlim, "Tbq, c^{bW}_{L}=1.0, #bf{#it{#Beta}}(T #rightarrow tH)=25%", "l") 
+    legend.AddEntry(grthlim, "Tbq, c^{bW}_{L}=0.5, #bf{#it{#Beta}}(T #rightarrow tH)=25%", "l") 
   if model == 'TttH':
-    legend.AddEntry(grthlim, "Ttq, c^{tZ}_{R}=1.0, #bf{#it{#Beta}}(T #rightarrow tH)=50%", "l")
+    legend.AddEntry(grthlim, "Ttq, c^{tZ}_{R}=0.5, #bf{#it{#Beta}}(T #rightarrow tH)=50%", "l")
   
   legend.Draw()
   
   ### Embellishment
   CMS_lumi.lumi_13TeV = ""
   CMS_lumi.writeExtraText = 1
-  CMS_lumi.extraText = "Preliminary Simulation"
+  CMS_lumi.extraText = "Preliminary"
    
   iPos = 11 ###HTshape
   if( iPos==0 ): CMS_lumi.relPosX = 0.12
@@ -202,15 +202,18 @@ def plotLimits(model, masses, th_xs):
 
 ####_______________________________________________________________________________________
 masses = [800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1700, 1800]
+c = 0.5
 
 if model == 'TbtH':
   br = 0.25
-  xs = [3.860*br, 2.720*br, 1.950*br, 1.350*br, 0.982*br, 0.716*br, 0.540*br, 0.408*br, 0.230*br, 0.174*br] 
-  
+  xs = [3.860, 2.720, 1.950, 1.350, 0.982, 0.716, 0.540, 0.408, 0.230, 0.174]
+   
 if model == 'TttH':
   br = 0.50
-  xs = [0.365*br, 0.271*br, 0.203*br, 0.152*br, 0.116*br, 0.0894*br, 0.0692*br, 0.0540*br, 0.0330*br, 0.0259*br] 
+  xs = [0.365, 0.271, 0.203, 0.152, 0.116, 0.0894, 0.0692, 0.0540, 0.0330, 0.0259] 
 
-plotLimits(model, masses, xs)
+xs_th = [a*br*c*c for a in xs]
+
+plotLimits(model, masses, xs_th)
 
 raw_input("hold on")
