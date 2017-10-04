@@ -36,7 +36,7 @@ See the [link](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideHiggsAnalysisComb
    
     python plotLimits.py
 
-    This script plots the expected limits by reading them for each quantile in root files located in directory <limitFiles>. The theory x-sections are taken directly from VHF [twiki](https://twiki.cern.ch/twiki/bin/view/CMS/B2GVHF#Vector_like_quark_pair_and_singl). The expected limits are plotted as is as computed by combine tool, without normalizating them to any other number (x-section). To comply with CMS plotting rules, the script uses the following style files <CMS_lumi.py> and <tdrstyle.py>.
+    This script plots the expected limits by reading them for each quantile in root files located in directory <limitFiles>. The theory x-sections are taken directly from VHF [twiki](https://twiki.cern.ch/twiki/bin/view/CMS/B2GVHF#Vector_like_quark_pair_and_singl). The expected limits are plotted as is as computed by combine tool, without normalizating them to any other number (x-section). To comply with CMS plotting rules, the script uses the following style files <CMS_lumi.py> and <tdrstyle.py>
   
        
 
