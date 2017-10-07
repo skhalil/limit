@@ -1,0 +1,18 @@
+\begin{tabular}{|c|c| } 
+\hline 
+Sample     & Events  \\ 
+\hline 
+TTJets     & 476        $\pm$ 15    \\ 
+estQCD     & 268        $\pm$ 6     \\ 
+TbtH\_800\_LH & 1          $\pm$ 0     \\ 
+TbtH\_900\_LH & 8          $\pm$ 1     \\ 
+TbtH\_1000\_LH & 29         $\pm$ 2     \\ 
+TbtH\_1100\_LH & 35         $\pm$ 1     \\ 
+TbtH\_1200\_LH & 30         $\pm$ 1     \\ 
+TbtH\_1300\_LH & 25         $\pm$ 1     \\ 
+TbtH\_1400\_LH & 20         $\pm$ 1     \\ 
+TbtH\_1500\_LH & 15         $\pm$ 0     \\ 
+TbtH\_1700\_LH & 8          $\pm$ 0     \\ 
+TbtH\_1800\_LH & 6          $\pm$ 0     \\ 
+\hline 
+\end{tabular} 

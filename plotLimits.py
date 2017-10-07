@@ -18,9 +18,23 @@ parser.add_option('--model', metavar='V', type='string', action='store',
                   default='TbtH',
                   dest='model',
                   help='TbtH/TttH/TbtZ')
+parser.add_option('--sFiles', metavar='V', type='string', action='store',
+                  #default='Oct17/templates_H_pT_300_top_pT_400_4Oct17',
+                  #default='Oct17/templates_pT_H_300_pT_top_400_noIsoLeptons_4Oct17',
+                  #default='Oct17/templates_pT_H_300_pT_top_400_forwardJetOne_4Oct17',
+                  #default='Oct17/templates_pT_H_300_pT_top_400_extraJetOne_4Oct17',
+                  #default='Oct17/templates_pT_H_300_pT_top_400_extraForwardJetOne_4Oct17',
+                  default='Oct17/templates_2015_ht1100_H_pT_300_top_pT_500_4Oct17',
+                  dest='sFiles',
+                  help='inputFiles')
+parser.add_option('--inoutdir', metavar='V', type='string', action='store',
+                  default='Oct17',
+                  dest='inoutdir',
+                  help='directory for templates and card files')
 (options,args) = parser.parse_args()
 # ==========end: options =============
 model = options.model
+source = options.sFiles
 
 def getLimit(model,masses,xs_th):
   print 'model to be plot', model, ' ', masses 
@@ -28,15 +42,22 @@ def getLimit(model,masses,xs_th):
   grexp1sig = ROOT.TGraphAsymmErrors(len(masses))
   grexp2sig = ROOT.TGraphAsymmErrors(len(masses))
   
-  grexplim .SetName('grexplim' +'_'+model) 
+  grexplim.SetName('grexplim' +'_'+model) 
   grexp1sig.SetName('grexp1sig'+'_'+model) 
   grexp2sig.SetName('grexp2sig'+'_'+model)
  
   mass_xsec = zip(masses, xs_th)
+  print 'latex/'+source+'/xsec.txt'
+  l_out = open('latex/'+source+'/xsec.txt', 'w')
+  intError = Double(5)
+  l_out.write('\\begin{tabular}{|c|c| } \n')
+  l_out.write('\hline \n')
+  l_out.write(' Mass (GeV) & Exp. Limit (fb) \\\\ \n')
+  l_out.write('\hline \n')
   for mass, xsec in mass_xsec:
     i = masses.index(mass)
     #xsec = 1.
-    f = ROOT.TFile.Open("limitFiles/noFwdJet/higgsCombine_Expected_"+model+"_M"+str(mass)+".Asymptotic.mH120.root", "r")
+    f = ROOT.TFile.Open("limitFiles/"+source+"/higgsCombine_Expected_"+model+"_M"+str(mass)+".AsymptoticLimits.mH120.root", "r")
     limit = f.Get("limit")
     entries = limit.GetEntriesFast()
     obs = 0
@@ -59,7 +80,10 @@ def getLimit(model,masses,xs_th):
     grexp2sig.SetPoint(i, mass, xsec*exp)
     grexp1sig.SetPointError(i, 0, 0, xsec*abs(exp-exp1sLow), xsec*abs(exp1sHigh-exp))
     grexp2sig.SetPointError(i, 0, 0, xsec*abs(exp-exp2sLow), xsec*abs(exp2sHigh-exp))
-    print '{0:<2} GeV : {1:<7.2f} fb'.format(mass, xsec*exp*1000)
+    l_out.write('{0:<5} & {1:<5.2f} \\\\ \n'.format(mass, xsec*exp*1000))
+  l_out.write('\hline \n')
+  l_out.write('\end{tabular} \n')
+  l_out.close()
   return grexplim, grexp1sig, grexp2sig
 
 ###___________________________
@@ -77,7 +101,7 @@ def plotLimits(model, masses, th_xs):
 
   # expected limit curves
   grexplim, grexp1sig, grexp2sig = getLimit(model, masses, th_xs)
-  print grthlim.GetN(), ' ',grexplim.GetN(), ' ', grexp1sig.GetN(), ' ', grexp2sig.GetN(), ' '
+ # print grthlim.GetN(), ' ',grexplim.GetN(), ' ', grexp1sig.GetN(), ' ', grexp2sig.GetN(), ' '
 
   #return
   #cosmetics
@@ -107,8 +131,8 @@ def plotLimits(model, masses, th_xs):
   grexplim.SetLineWidth(2)
   grexplim.SetLineStyle(7)
  
-  ymax = grexp2sig.GetHistogram().GetMaximum()*500.0
-  ymin = grexp2sig.GetHistogram().GetMaximum()*0.001 
+  ymax = grexp2sig.GetHistogram().GetMaximum()
+  ymin = grexp2sig.GetHistogram().GetMaximum()
   print ymax, ymin
   #grthlim.SetMinimum(1.)
   #grthlim.SetMaximum(1000.)
@@ -191,6 +215,13 @@ def plotLimits(model, masses, th_xs):
   latex.SetTextSize(0.04)
   latex.SetTextFont(62);
   latex.DrawLatex(0.68, 0.95, "36 fb^{-1} (13 TeV)")
+
+  name = ROOT.TLatex()
+  name.SetNDC()
+  name.SetTextAlign(13)
+  name.SetTextSize(0.04)
+  name.SetTextFont(42);
+  name.DrawLatex(0.51, 0.58, "pp #rightarrow Tbq, LH coupling")
   
   pad.RedrawAxis()
   

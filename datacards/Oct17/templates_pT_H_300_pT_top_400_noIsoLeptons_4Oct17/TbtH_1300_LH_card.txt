@@ -1,0 +1,26 @@
+imax 1  number of channels 
+jmax 2  number of backgrounds 
+kmax *  number of nuisance parameters 
+------------------------------------------- 
+shapes * * ../sourceFiles/Oct17/templates_pT_H_300_pT_top_400_noIsoLeptons_4Oct17.root $CHANNEL_$PROCESS $CHANNEL_$PROCESS_$SYSTEMATIC 
+------------------------------------------- 
+# we have just one channel, in which we observe x data events 
+bin         MTP_regionD 
+observation 656.0    
+# now we list the expected events for sig and all backgrounds in that bin 
+# the second 'process' line must have a positive number for backgrounds, and 0 for signal 
+# then we list the independent sources of uncertainties, and give their effect (syst. error) 
+# on each process and bin 
+bin                         MTP_regionD  MTP_regionD  MTP_regionD   
+process                     TbtH_1300_LH  estQCD      TTJets       
+process                     0           1           2            
+rate                        23.7810     266.5609    452.6878    
+--------------------------------------------------------------------------
+lumi       lnN    1.0260      0.9493      1.0534      lumi 
+purewt     lnN    1.0300      0.9417      1.0619      pileup 
+pdfrewt    lnN    0.9802      0.9802      1.0202      PDF 
+topxsec    lnN    -              0.8841      0.8841      ttbar norm 
+higgsSf    lnN    1.1000      0.8182      1.2222      higgs SF 
+tau21Sf    lnN    1.1250      0.7778      1.2857      tau21 SF 
+topmJES    lnN    1.0200      0.9608      1.0408      top tag mass 
+higgsmJES  lnN    1.0200      0.9608      1.0408      higgs mass 
